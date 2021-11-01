@@ -1,0 +1,10 @@
+Commands to Run:
+
+conda create --name raft
+conda activate raft
+conda install pytorch=1.6.0 torchvision=0.7.0 cudatoolkit=10.1 matplotlib tensorboard scipy opencv pandas -c pytorch
+./download_models.sh
+python video_flow.py --model=models/raft-sintel.pth --input_path=official --output_path=official_flow [some extra specifics for cpu-computing]
+
+
+
