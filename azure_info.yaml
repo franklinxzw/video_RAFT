@@ -1,0 +1,4 @@
+upload_conn_str: "DefaultEndpointsProtocol=https;AccountName=franklinwang;AccountKey=Gq9m+HuFTZacCxSZhg8PdrBb6DstmyRi2ZH3DUsZXyTDLDCR6GllGiGc62dy4+20zCBbx45bRi6ESQaylWBuoQ==;EndpointSuffix=core.windows.net"
+upload_container_name: 'franklin-flow'
+download_conn_str: "DefaultEndpointsProtocol=https;AccountName=franklinwang;AccountKey=Gq9m+HuFTZacCxSZhg8PdrBb6DstmyRi2ZH3DUsZXyTDLDCR6GllGiGc62dy4+20zCBbx45bRi6ESQaylWBuoQ==;EndpointSuffix=core.windows.net"
+download_container_name: 'franklin-video'
