@@ -157,10 +157,11 @@ def video_flow(args):
     input_dir = args.azure_data_path
     all_videos = get_video_list(input_dir)
     video_subset = get_video_list_partition(all_videos, args.node_id, args.total_nodes)
+    print(len(all_videos), len(video_subset))
     output_dir = args.output_path
     df = pd.DataFrame(([True] * len(all_videos)), index =all_videos,
                                               columns =['has_flow'])
-    for i, video_fname in enumerate(all_videos):
+    for i, video_fname in enumerate(video_subset):
         print(i, video_fname)
         save_filename = video_fname.replace(input_dir, output_dir)
         if not check_if_video_has_been_processed(save_filename):
