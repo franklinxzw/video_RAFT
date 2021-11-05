@@ -1,10 +1,22 @@
-### Commands to run to setup environment and download models: ###
+### Commands to run to setup environment with conda: ###
 
 conda create --name raft
 conda activate raft
 conda install pytorch=1.6.0 torchvision=0.7.0 cudatoolkit=10.1 matplotlib tensorboard scipy opencv pandas -c pytorch
 conda install -c conda-forge azure-storage-blob
 conda install -c anaconda pyyaml
+
+
+### Commands to run to setup environment without conda (using virtualenv): ###
+sudo add-apt-repository ppa:deadsnakes/ppa
+sudo apt-get update
+sudo apt-get install python3.7
+python3.7 -m venv not_conda
+source activate not_conda/bin/activate
+pip install -r requirements.txt
+./download_models
+
+### Download models
 ./download_models.sh
 
 ### Before running, edit azure_info.yaml to have the proper credentials to read and write blobs from Azure storage for both input video data and output flow data. Connection string and container name for download and upload are required. ###

@@ -19,7 +19,7 @@ from matplotlib import pyplot as plt
 import pandas as pd
 import time
 
-DEVICE='cpu'
+DEVICE='cuda'
 
 def load_image(imfile):
     im = Image.open(imfile)
@@ -92,16 +92,17 @@ def video_flow(args):
     model.eval()
     input_dir = args.input_path
     all_videos = sorted(glob.glob(input_dir +'/**/**/*.mp4'))
-    all_videos = sorted(sample(all_videos,3))
+    all_videos = sorted(sample(all_videos,50000))
     output_dir = args.output_path
     with torch.no_grad():
         df = pd.DataFrame(([True] * len(all_videos)), index =all_videos,
                                                   columns =['has_flow'])
-        for video_fname in all_videos:
-            #print(video_fname)
+        for i, video_fname in enumerate(all_videos):
+            print(i, video_fname)
             rgb_frames, fps, fourcc = load_video(video_fname)
             if len(rgb_frames) < 2:
                 df.loc[video_fname,'has_flow']=False
+                continue
             flow_video = []
             for image1, image2 in zip(rgb_frames[:-1], rgb_frames[1:]):
                 image1_proc = process_image(image1)

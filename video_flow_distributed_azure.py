@@ -2,6 +2,7 @@ import sys
 sys.path.append('core')
 from PIL import Image
 import os
+os.environ["CUDA_VISIBLE_DEVICES"]=""
 import argparse
 
 import os
@@ -20,7 +21,6 @@ import pandas as pd
 import time
 from azure.storage.blob import BlobServiceClient, BlobClient
 import yaml
-
 DEVICE='cpu'
 
 def process_image(img):
@@ -150,7 +150,8 @@ def video_flow(args):
         return video_list
     
     model = torch.nn.DataParallel(RAFT(args))
-    model.load_state_dict(torch.load(args.model))
+    #model.load_state_dict(torch.load(args.model))
+    model.load_state_dict(torch.load(args.model, map_location=torch.device('cpu')))
     model = model.module
     model.to(DEVICE)
     model.eval()
