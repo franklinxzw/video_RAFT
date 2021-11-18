@@ -146,7 +146,7 @@ def video_flow(args):
         container_name = download_container_name
         container_client = blob_service_client.get_container_client(container_name)
         blob_list = container_client.list_blobs(name_starts_with=azure_dir)
-        video_list = [blob.name for blob in blob_list]
+        video_list = [blob.name for blob in blob_list if '.mp4' in blob.name]
         return video_list
     
     model = torch.nn.DataParallel(RAFT(args))
