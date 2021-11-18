@@ -64,11 +64,14 @@ def write_frame_list_to_video(frames_list, fps, video_fname):
         writer.write(frame_fixed)
     writer.release()
             
-def get_video_list_partition(video_list, node_id, total_nodes):
+def get_video_list_partition(video_list, job_set_id, total_job_sets, node_id, total_nodes):
     video_list = sorted(video_list)
     video_list =np.array(video_list, dtype=object)
-    splits = np.array_split(video_list, total_nodes)
-    video_subset_list = list(splits[node_id])
+    total_divisions = total_job_sets * total_nodes
+    splits = np.array_split(video_list, total_divisions)
+    chosen_split_idx = job_set_id * total_nodes + node_id
+    video_subset_list = list(splits[chosen_split_idx])
+    print(total_divisions, chosen_split_idx)
     return video_subset_list
 
 def compute_optical_flow(model, rgb_frames):
@@ -157,7 +160,8 @@ def video_flow(args):
     model.eval()
     input_dir = args.azure_data_path
     all_videos = get_video_list(input_dir)
-    video_subset = get_video_list_partition(all_videos, args.node_id, args.total_nodes)
+    print(len(all_videos))
+    video_subset = get_video_list_partition(all_videos, args.job_set_id, args.total_job_sets, args.node_id, args.total_nodes)
     print(len(all_videos), len(video_subset))
     output_dir = args.output_path
     df = pd.DataFrame(([True] * len(all_videos)), index =all_videos,
@@ -190,8 +194,10 @@ if __name__ == '__main__':
     parser.add_argument('--small', action='store_true', help='use small model')
     parser.add_argument('--mixed_precision', action='store_true', help='use mixed precision')
     parser.add_argument('--alternate_corr', action='store_true', help='use efficent correlation implementation')
-    parser.add_argument('--node_id', type=int, help="ID of node, starting from 0 to total_nodes-1")
-    parser.add_argument('--total_nodes', type=int, help="Total number of nodes for distributed job")
+    parser.add_argument('--total_job_sets', type=int, default=6, help="number of job sets, default is 6")
+    parser.add_argument('--job_set_id', type=int, help="ID of job set, starting from 0 to number_of_job sets - 1")
+    parser.add_argument('--node_id', type=int, help="ID of node, starting from 0 to total_nodes-1 (total nodes being 100 for our case)")
+    parser.add_argument('--total_nodes', default=100, type=int, help="Total number of nodes for distributed job, 100 for our case")
     parser.add_argument('--azure_yaml_file', help="YAML file containing all the info for Azure storage")
     args = parser.parse_args()
     video_flow(args)

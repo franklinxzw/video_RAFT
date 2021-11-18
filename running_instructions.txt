@@ -23,6 +23,6 @@ pip install -r requirements.txt
 
 
 ### Command to run training job for one node ###
-python3 video_flow_distributed_azure.py --model=models/raft-sintel.pth --azure_data_path=official --output_path=official_flow --azure_yaml_file azure_info.yaml --total_nodes <number of nodes> --node_id <id of current node>
+python3 video_flow_distributed_azure.py --model=models/raft-sintel.pth --azure_data_path=kinetics400/official --output_path=official_flow --azure_yaml_file azure_info.yaml --total_job_sets 6 --job_set_id 5 --total_nodes 10000 --node_id 9999
 
 
