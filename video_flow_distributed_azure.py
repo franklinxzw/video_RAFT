@@ -21,6 +21,7 @@ import pandas as pd
 import time
 from azure.storage.blob import BlobServiceClient, BlobClient
 import yaml
+from itertools import compress
 DEVICE='cpu'
 
 def process_image(img):
@@ -159,10 +160,18 @@ def video_flow(args):
     model.to(DEVICE)
     model.eval()
     input_dir = args.azure_data_path
-    all_videos = get_video_list(input_dir)
+    #all_videos = get_video_list(input_dir)
+    #print(len(all_videos))
+    
+    if args.remaining_videos is not None:
+        txt = open(args.remaining_videos, "r")
+        remaining_videos = txt.readlines()
+        all_videos = [os.path.join(input_dir,r[:-1]) for r in remaining_videos]
+    else:
+        all_videos = get_video_list(input_dir)
     print(len(all_videos))
     video_subset = get_video_list_partition(all_videos, args.job_set_id, args.total_job_sets, args.node_id, args.total_nodes)
-    print(len(all_videos), len(video_subset))
+    print(len(video_subset))
     output_dir = args.output_path
     df = pd.DataFrame(([True] * len(all_videos)), index =all_videos,
                                               columns =['has_flow'])
@@ -188,6 +197,7 @@ def video_flow(args):
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
+    parser.add_argument('--remaining_videos', default=None, help ="restore training job from a list of remaining videos")
     parser.add_argument('--model', help="restore checkpoint")
     parser.add_argument('--azure_data_path', help="dataset path on Azure storage")
     parser.add_argument('--output_path', help="local output path for optical flow videos ")
